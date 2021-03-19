@@ -55,11 +55,11 @@ const runSearch = () => {
           break;
 
         case 'View roles':
-          rangeSearch();
+          viewRoles();
           break;
 
         case 'View employees':
-          songSearch();
+          viewEmployees();
           break;
 
         case 'Update employee roles':
@@ -73,15 +73,35 @@ const runSearch = () => {
     });
 };
 
-//First view query
+// View departments
 const viewDepts = () => {
   const query = 'SELECT name AS Department FROM department';
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
+    runSearch();
   });
 };
 
+// View roles
+const viewRoles = () => {
+  const query = 'SELECT title FROM role';
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runSearch();
+  });
+};
+
+// View employees
+const viewEmployees = () => {
+  const query = 'SELECT first_name, last_name FROM employee';
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+    runSearch();
+  });
+};
 
 const addRoles = () => {
   const query = 'SELECT * FROM department';
