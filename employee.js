@@ -11,8 +11,8 @@ const connection = mysql.createConnection({
   user: 'root',
 
   // Be sure to update with your own MySQL password!
-  password: '',
-  database: 'top_songsDB',
+  password: 'Computer_01',
+  database: 'employee_trackerDB',
 });
 
 connection.connect((err) => {
@@ -27,33 +27,43 @@ const runSearch = () => {
       type: 'rawlist',
       message: 'What would you like to do?',
       choices: [
-        'Find songs by artist',
-        'Find all artists who appear more than once',
-        'Find data within a specific range',
-        'Search for a specific song',
-        'Find artists with a top song and top album in the same year',
+        'Add departments',
+        'Add roles',
+        'Add employees',
+        'View departments',
+        'View roles',
+        'View employees',
+        'Update employee roles',
       ],
     })
     .then((answer) => {
       switch (answer.action) {
-        case 'Find songs by artist':
+        case 'Add departments':
           artistSearch();
           break;
 
-        case 'Find all artists who appear more than once':
-          multiSearch();
+        case 'Add roles':
+          addRoles();
           break;
 
-        case 'Find data within a specific range':
+        case 'Add employees':
           rangeSearch();
           break;
 
-        case 'Search for a specific song':
+        case 'View departments':
+          viewDepts();
+          break;
+
+        case 'View roles':
+          rangeSearch();
+          break;
+
+        case 'View employees':
           songSearch();
           break;
 
-        case 'Find artists with a top song and top album in the same year':
-          songAndAlbumSearch();
+        case 'Update employee roles':
+          updateEmployeeRole();
           break;
 
         default:
@@ -62,6 +72,85 @@ const runSearch = () => {
       }
     });
 };
+
+//First view query
+const viewDepts = () => {
+  const query = 'SELECT name AS Department FROM department';
+  connection.query(query, (err, res) => {
+    if (err) throw err;
+    console.table(res);
+  });
+};
+
+
+const addRoles = () => {
+  const query = 'SELECT * FROM department';
+  //const query = "SELECT name AS Department FROM department";
+  connection.query(query, (err, res) => {
+    inquirer
+      .prompt([
+        {
+          name: 'title',
+          type: 'input',
+          message: 'What is the title of the role?'
+        },
+        {
+          name: 'salary',
+          type: 'input',
+          message: 'What is the salary?'
+        },
+        {
+          name: 'department_id',
+          type: 'list',
+          message: 'What is the department ID?',
+          choices: res
+        },
+      ])
+      .then((answer) => {
+        var objId = res.find((department) => {
+          return answer.department_id === department.name;
+        });
+
+        const query = 'INSERT INTO role SET ?';
+        const newRole = {
+          title: answer.title,
+          salary: answer.salary,
+          department_id: objId.id
+        };
+        connection.query(query, newRole, (err, res) => {
+          if (err) throw err;
+          console.log("Role has been added");
+        });
+      });
+  });
+}
+
+
+const updateEmployeeRole = () => {
+  var query1 = 'SELECT id, title AS name FROM role';
+  connection.query(query1, (err, role) => {
+    var query2 = 'SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee';
+    connection.query(query2, (err, emps) => {
+      inquirer
+        .prompt([
+          {
+            name: 'employeeUpdate',
+            type: 'list',
+            message: 'Which employee do you want to update?',
+            choices: emps
+          },
+          {
+            name: 'newRole',
+            type: 'list',
+            message: 'What is the employees new role',
+            choices: role
+          },
+        ]).then((answer) => {
+          console.log(answer);
+        });
+    });
+  });
+}
 
 const artistSearch = () => {
   inquirer
