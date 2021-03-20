@@ -4,13 +4,10 @@ const inquirer = require('inquirer');
 const connection = mysql.createConnection({
   host: 'localhost',
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: 'root',
 
-  // Be sure to update with your own MySQL password!
   password: 'Computer_01',
   database: 'employee_trackerDB',
 });
@@ -167,39 +164,34 @@ const updateEmployeeRole = () => {
           },
         ]).then((answer) => {
           console.log(answer);
+
+          var roleId = res.find((role) => {
+            return answer.role_id === role.name;
+          });
+
+
+          const query = 'UPDATE employee SET ? WHERE ?';
+          const upRole = [{
+            role_id: roleId,
+          },
+          // unsure what to do here to compare 
+          {
+            title: answer.title,
+            salary: answer.salary,
+            department_id: objId.id
+          }];
+
+          connection.query(query, upRole, (err, res) => {
+            if (err) throw err;
+            console.log("Role has been updated");
+          });
+
         });
     });
   });
 }
 
-const artistSearch = () => {
-  inquirer
-    .prompt({
-      name: 'artist',
-      type: 'input',
-      message: 'What artist would you like to search for?',
-    })
-    .then((answer) => {
-      const query = 'SELECT position, song, year FROM top5000 WHERE ?';
-      connection.query(query, { artist: answer.artist }, (err, res) => {
-        res.forEach(({ position, song, year }) => {
-          console.log(
-            `Position: ${position} || Song: ${song} || Year: ${year}`
-          );
-        });
-        runSearch();
-      });
-    });
-};
 
-const multiSearch = () => {
-  const query =
-    'SELECT artist FROM top5000 GROUP BY artist HAVING count(*) > 1';
-  connection.query(query, (err, res) => {
-    res.forEach(({ artist }) => console.log(artist));
-    runSearch();
-  });
-};
 
 const rangeSearch = () => {
   inquirer
