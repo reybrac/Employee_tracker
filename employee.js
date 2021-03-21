@@ -138,7 +138,9 @@ const addRoles = () => {
           if (err) throw err;
           console.log("Role has been added");
         });
+        runSearch();
       });
+
   });
 }
 
@@ -165,45 +167,26 @@ const updateEmployeeRole = () => {
         ]).then((answer) => {
           console.log("answer: ", answer);
 
-
           var roleId = roles.find((role) => {
             return answer.newRole === role.name;
           });
 
-          console.log("roleId: ", roleId.id);
+          // console.log("roleId: ", roleId.id);
 
-          // const query = 'UPDATE employee SET ? WHERE ?';
-          // const upRole = [{
-          //   role_id: roleId.id,
-          // },
-
-          // {
-          //   first_name: names[0],
-          //   last_name: names[1],
-          // }];
-          // console.log('upRole: ', upRole);
-
-          // connection.query(query, upRole, (err) => {
-          //   if (err) throw err;
-          //   console.log("Role has been updated");
-          // });
-          // // Going to try to do a connection.query with all the parameters in there
           var names = answer.employeeUpdate.split(' ');
 
           var names1 = names[0];
           var names2 = names[1];
 
-          // var nameId = emps.find((employee) => {
-          //   return names[0] === employee.first_name && names[1] === employee.last_name;
-          // });
-          // console.log("nameid: ", nameId);
-          connection.query('UPDATE employee SET ? WHERE ?',
+          connection.query('UPDATE employee SET ? WHERE (? AND ?) ',
             [
               {
                 role_id: roleId.id,
               },
               {
                 first_name: names1,
+              },
+              {
                 last_name: names2,
               },
             ],
@@ -212,7 +195,7 @@ const updateEmployeeRole = () => {
               console.log('Role has been update');
             }
           );
-
+          runSearch();
         });
     });
   });
