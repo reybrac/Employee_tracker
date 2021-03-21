@@ -145,7 +145,7 @@ const addRoles = () => {
 
 const updateEmployeeRole = () => {
   var query1 = 'SELECT id, title AS name FROM role';
-  connection.query(query1, (err, role) => {
+  connection.query(query1, (err, roles) => {
     var query2 = 'SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee';
     connection.query(query2, (err, emps) => {
       inquirer
@@ -160,31 +160,58 @@ const updateEmployeeRole = () => {
             name: 'newRole',
             type: 'list',
             message: 'What is the employees new role',
-            choices: role
+            choices: roles
           },
         ]).then((answer) => {
-          console.log(answer);
+          console.log("answer: ", answer);
 
-          var roleId = res.find((role) => {
-            return answer.role_id === role.name;
+
+          var roleId = roles.find((role) => {
+            return answer.newRole === role.name;
           });
 
+          console.log("roleId: ", roleId.id);
 
-          const query = 'UPDATE employee SET ? WHERE ?';
-          const upRole = [{
-            role_id: roleId,
-          },
-          // unsure what to do here to compare 
-          {
-            title: answer.title,
-            salary: answer.salary,
-            department_id: objId.id
-          }];
+          // const query = 'UPDATE employee SET ? WHERE ?';
+          // const upRole = [{
+          //   role_id: roleId.id,
+          // },
 
-          connection.query(query, upRole, (err, res) => {
-            if (err) throw err;
-            console.log("Role has been updated");
-          });
+          // {
+          //   first_name: names[0],
+          //   last_name: names[1],
+          // }];
+          // console.log('upRole: ', upRole);
+
+          // connection.query(query, upRole, (err) => {
+          //   if (err) throw err;
+          //   console.log("Role has been updated");
+          // });
+          // // Going to try to do a connection.query with all the parameters in there
+          var names = answer.employeeUpdate.split(' ');
+
+          var names1 = names[0];
+          var names2 = names[1];
+
+          // var nameId = emps.find((employee) => {
+          //   return names[0] === employee.first_name && names[1] === employee.last_name;
+          // });
+          // console.log("nameid: ", nameId);
+          connection.query('UPDATE employee SET ? WHERE ?',
+            [
+              {
+                role_id: roleId.id,
+              },
+              {
+                first_name: names1,
+                last_name: names2,
+              },
+            ],
+            (err) => {
+              if (err) throw err;
+              console.log('Role has been update');
+            }
+          );
 
         });
     });
