@@ -164,7 +164,7 @@ const addRoles = () => {
         };
         connection.query(query, newRole, (err, res) => {
           if (err) throw err;
-          console.log("Role has been added");
+          console.log("New Role has been added");
         });
         runSearch();
       });
@@ -191,13 +191,13 @@ const addEmployee = () => {
             message: `What is the employee's last name?`,
           },
           {
-            name: 'role',
+            name: 'roleId',
             type: 'list',
             message: `What is the employee's role`,
             choices: roles
           },
           {
-            name: 'manager',
+            name: 'managerId',
             type: 'list',
             message: `Who is the employee's manager`,
             choices: emps
@@ -206,32 +206,29 @@ const addEmployee = () => {
           console.log("answer: ", answer);
 
           var roleId = roles.find((role) => {
-            return answer.role === role.name;
+            return answer.roleId === role.name;
           });
 
-          // console.log("roleId: ", roleId.id);
+          //console.log("roleId: ", roleId.id);
 
-          var names = answer.employeeUpdate.split(' ');
+          var manager = emps.find((employee) => {
+            return answer.managerId === employee.name;
+          });
 
-          var names1 = names[0];
-          var names2 = names[1];
+          console.log("manager.id: ", manager.id);
 
-          connection.query('UPDATE employee SET ? WHERE (? AND ?) ',
-            [
-              {
-                role_id: roleId.id,
-              },
-              {
-                first_name: names1,
-              },
-              {
-                last_name: names2,
-              },
-            ],
-            (err) => {
-              if (err) throw err;
-              console.log('Role has been update');
-            }
+          const query = 'INSERT INTO employee SET ?';
+          const newEmp = {
+            first_name: answer.firstName,
+            last_name: answer.lastName,
+            role_id: roleId.id,
+            manager_id: manager.id,
+          };
+
+          connection.query(query, newEmp, (err, res) => {
+            if (err) throw err;
+            console.log('Employee has been added');
+          }
           );
           runSearch();
         });
