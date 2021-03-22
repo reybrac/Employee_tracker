@@ -36,7 +36,7 @@ const runSearch = () => {
     .then((answer) => {
       switch (answer.action) {
         case 'Add departments':
-          artistSearch();
+          addDepartment();
           break;
 
         case 'Add roles':
@@ -44,7 +44,7 @@ const runSearch = () => {
           break;
 
         case 'Add employees':
-          rangeSearch();
+          //rangeSearch();
           break;
 
         case 'View departments':
@@ -100,9 +100,39 @@ const viewEmployees = () => {
   });
 };
 
+const addDepartment = () => {
+  // const query = 'SELECT * FROM department';
+
+  // connection.query(query, (err, res) => {
+  inquirer
+    .prompt([
+      {
+        name: 'departmentName',
+        type: 'input',
+        message: 'Enter the name of the department'
+      },
+    ])
+    .then((answer) => {
+
+      const query = 'INSERT INTO department SET ?';
+      const newDept = {
+        name: answer.departmentName,
+      };
+      console.log("answer: ", answer);
+      connection.query(query, newDept, (err, res) => {
+        if (err) throw err;
+        console.log("New Department has been added");
+        runSearch();
+      });
+
+    });
+  // });
+}
+
+// Add roles to the database
 const addRoles = () => {
   const query = 'SELECT * FROM department';
-  //const query = "SELECT name AS Department FROM department";
+
   connection.query(query, (err, res) => {
     inquirer
       .prompt([
@@ -144,7 +174,7 @@ const addRoles = () => {
   });
 }
 
-
+// Update an employee
 const updateEmployeeRole = () => {
   var query1 = 'SELECT id, title AS name FROM role';
   connection.query(query1, (err, roles) => {
