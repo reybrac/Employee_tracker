@@ -26,11 +26,12 @@ const runSearch = () => {
       choices: [
         'Add departments', // completed
         'Add roles', // completed
-        'Add employees',
+        'Add employees', // completed
         'View departments', // completed
         'View roles', // completed
         'View employees', // completed
         'Update employee roles', // completed
+        'Update employee manager',
       ],
     })
     .then((answer) => {
@@ -63,6 +64,11 @@ const runSearch = () => {
           updateEmployeeRole();
           break;
 
+        case 'Update employee manager':
+          updateEmployeeManager();
+          break;
+
+
         default:
           console.log(`Invalid action: ${answer.action}`);
           break;
@@ -92,7 +98,7 @@ const viewRoles = () => {
 
 // View employees
 const viewEmployees = () => {
-  const query = 'SELECT first_name, last_name FROM employee';
+  const query = 'SELECT first_name, last_name, manager_id FROM employee';
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
@@ -203,7 +209,7 @@ const addEmployee = () => {
             choices: emps
           },
         ]).then((answer) => {
-          console.log("answer: ", answer);
+          // console.log("answer: ", answer);
 
           var roleId = roles.find((role) => {
             return answer.roleId === role.name;
@@ -215,7 +221,7 @@ const addEmployee = () => {
             return answer.managerId === employee.name;
           });
 
-          console.log("manager.id: ", manager.id);
+          // console.log("manager.id: ", manager.id);
 
           const query = 'INSERT INTO employee SET ?';
           const newEmp = {
@@ -236,8 +242,7 @@ const addEmployee = () => {
   });
 }
 
-
-// Update the for role for an employee
+// Update the role for an employee
 const updateEmployeeRole = () => {
   var query1 = 'SELECT id, title AS name FROM role';
   connection.query(query1, (err, roles) => {
@@ -285,7 +290,7 @@ const updateEmployeeRole = () => {
             ],
             (err) => {
               if (err) throw err;
-              console.log('Role has been update');
+              console.log('Role has been updated');
             }
           );
           runSearch();
@@ -294,4 +299,60 @@ const updateEmployeeRole = () => {
   });
 }
 
+// Update the manager for an employee
+const updateEmployeeManager = () => {
+  var query1 = 'SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee';
+  connection.query(query1, (err, managers) => {
+    var query2 = 'SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee';
+    connection.query(query2, (err, emps) => {
+      inquirer
+        .prompt([
+          {
+            name: 'employeeUpdate',
+            type: 'list',
+            message: 'Which employee do you want to update?',
+            choices: emps
+          },
+          {
+            name: 'newManager',
+            type: 'list',
+            message: `Who is the employee's new manager`,
+            choices: managers
+          },
+        ]).then((answer) => {
+          console.log("answer: ", answer);
+
+          var managerId = managers.find((manager) => {
+            return answer.newManager === manager.name;
+          });
+
+          // console.log("roleId: ", roleId.id);
+
+          var names = answer.employeeUpdate.split(' ');
+
+          var names1 = names[0];
+          var names2 = names[1];
+
+          connection.query('UPDATE employee SET ? WHERE (? AND ?) ',
+            [
+              {
+                manager_id: managerId.id,
+              },
+              {
+                first_name: names1,
+              },
+              {
+                last_name: names2,
+              },
+            ],
+            (err) => {
+              if (err) throw err;
+              console.log('Manager has been updated');
+            }
+          );
+          runSearch();
+        });
+    });
+  });
+}
 
