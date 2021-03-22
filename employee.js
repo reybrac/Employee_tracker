@@ -30,8 +30,9 @@ const runSearch = () => {
         'View departments', // completed
         'View roles', // completed
         'View employees', // completed
+        'View employees by Manager',
         'Update employee roles', // completed
-        'Update employee manager',
+        'Update employee manager', // completed
       ],
     })
     .then((answer) => {
@@ -59,6 +60,11 @@ const runSearch = () => {
         case 'View employees':
           viewEmployees();
           break;
+
+        case 'View employees by Manager':
+          viewEmpByManager();
+          break;
+
 
         case 'Update employee roles':
           updateEmployeeRole();
@@ -104,6 +110,41 @@ const viewEmployees = () => {
     console.table(res);
     runSearch();
   });
+
+};
+
+// View employees by Manager
+const viewEmpByManager = () => {
+  const query = 'SELECT id, CONCAT(first_name, " ", last_name) AS name FROM employee';
+  connection.query(query, (err, res) => {
+    inquirer
+      .prompt([
+        {
+          name: 'managerName',
+          type: 'list',
+          message: `Select manager's name`,
+          choices: res
+        },
+      ])
+      .then((answer) => {
+        //console.log(res);
+        var managerId = res.find((manager) => {
+          return answer.managerName === manager.name;
+        });
+        //console.log("managerID: ", managerId);
+        const query = 'SELECT first_name, last_name, role_id FROM employee where ?';
+
+        var managerlist = {
+          manager_id: managerId.id,
+        };
+        connection.query(query, managerlist, (err, res) => {
+          if (err) throw err;
+          console.table(res);
+          runSearch();
+        });
+
+      });
+  });
 };
 
 // Add a department 
@@ -131,7 +172,7 @@ const addDepartment = () => {
       });
 
     });
-}
+};
 
 // Add roles to the database
 const addRoles = () => {
@@ -171,12 +212,11 @@ const addRoles = () => {
         connection.query(query, newRole, (err, res) => {
           if (err) throw err;
           console.log("New Role has been added");
+          runSearch();
         });
-        runSearch();
       });
-
   });
-}
+};
 
 // Add a new employee
 const addEmployee = () => {
@@ -234,13 +274,12 @@ const addEmployee = () => {
           connection.query(query, newEmp, (err, res) => {
             if (err) throw err;
             console.log('Employee has been added');
-          }
-          );
-          runSearch();
+            runSearch();
+          });
         });
     });
   });
-}
+};
 
 // Update the role for an employee
 const updateEmployeeRole = () => {
@@ -291,13 +330,13 @@ const updateEmployeeRole = () => {
             (err) => {
               if (err) throw err;
               console.log('Role has been updated');
+              runSearch();
             }
           );
-          runSearch();
         });
     });
   });
-}
+};
 
 // Update the manager for an employee
 const updateEmployeeManager = () => {
@@ -348,11 +387,11 @@ const updateEmployeeManager = () => {
             (err) => {
               if (err) throw err;
               console.log('Manager has been updated');
+              runSearch();
             }
           );
-          runSearch();
         });
     });
   });
-}
+};
 
