@@ -139,6 +139,7 @@ const viewEmpByManager = () => {
         };
         connection.query(query, managerlist, (err, res) => {
           if (err) throw err;
+          console.log("Employees by manager:", managerId.name);
           console.table(res);
           runSearch();
         });
