@@ -33,7 +33,8 @@ const runSearch = () => {
         'View employees by Manager', //completed
         'Update employee roles', // completed
         'Update employee manager', // completed
-        'Delete role',
+        'Delete role', // completed
+        'Delete department',
       ],
     })
     .then((answer) => {
@@ -78,6 +79,9 @@ const runSearch = () => {
           deleteRole();
           break;
 
+        case 'Delete department':
+          deleteDept();
+          break;
 
         default:
           console.log(`Invalid action: ${answer.action}`);
@@ -429,6 +433,45 @@ const deleteRole = () => {
           (err) => {
             if (err) throw err;
             console.log(`Role deleted!\n`);
+            runSearch();
+          }
+        );
+
+
+      });
+
+  });
+
+};
+
+// Delete a department
+const deleteDept = () => {
+  const query = 'SELECT id, name AS name FROM department';
+  connection.query(query, (err, res) => {
+    inquirer
+      .prompt([
+        {
+          name: 'deleteDept',
+          type: 'list',
+          message: `Select department to delete`,
+          choices: res
+        },
+      ])
+      .then((answer) => {
+        //console.log(res);
+        var delDpt = res.find((department) => {
+          return answer.deleteDept === department.name;
+        });
+        console.log(answer);
+        console.log("deleteDpt: ", delDpt);
+        connection.query(
+          'DELETE FROM department WHERE ?',
+          {
+            id: delDpt.id,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log(`Department deleted!\n`);
             runSearch();
           }
         );
