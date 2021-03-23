@@ -24,28 +24,29 @@ const runSearch = () => {
       type: 'rawlist',
       message: 'What would you like to do?',
       choices: [
-        'Add departments', // completed
-        'Add roles', // completed
-        'Add employees', // completed
+        'Add department', // completed
+        'Add role', // completed
+        'Add employee', // completed
         'View departments', // completed
         'View roles', // completed
         'View employees', // completed
-        'View employees by Manager',
+        'View employees by Manager', //completed
         'Update employee roles', // completed
         'Update employee manager', // completed
+        'Delete role',
       ],
     })
     .then((answer) => {
       switch (answer.action) {
-        case 'Add departments':
+        case 'Add department':
           addDepartment();
           break;
 
-        case 'Add roles':
-          addRoles();
+        case 'Add role':
+          addRole();
           break;
 
-        case 'Add employees':
+        case 'Add employee':
           addEmployee();
           break;
 
@@ -65,13 +66,16 @@ const runSearch = () => {
           viewEmpByManager();
           break;
 
-
         case 'Update employee roles':
           updateEmployeeRole();
           break;
 
         case 'Update employee manager':
           updateEmployeeManager();
+          break;
+
+        case 'Delete role':
+          deleteRole();
           break;
 
 
@@ -104,7 +108,7 @@ const viewRoles = () => {
 
 // View employees
 const viewEmployees = () => {
-  const query = 'SELECT first_name, last_name, manager_id FROM employee';
+  const query = 'SELECT first_name, last_name, title, salary, name,  manager_id FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id';
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
@@ -132,7 +136,7 @@ const viewEmpByManager = () => {
           return answer.managerName === manager.name;
         });
         //console.log("managerID: ", managerId);
-        const query = 'SELECT first_name, last_name, role_id FROM employee where ?';
+        const query = 'SELECT first_name, last_name, title, name FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id WHERE ?';
 
         var managerlist = {
           manager_id: managerId.id,
@@ -176,7 +180,7 @@ const addDepartment = () => {
 };
 
 // Add roles to the database
-const addRoles = () => {
+const addRole = () => {
   const query = 'SELECT * FROM department';
 
   connection.query(query, (err, res) => {
@@ -396,3 +400,42 @@ const updateEmployeeManager = () => {
   });
 };
 
+// Delete a role
+const deleteRole = () => {
+
+  const query = 'SELECT id, title AS name FROM role';
+  connection.query(query, (err, res) => {
+    inquirer
+      .prompt([
+        {
+          name: 'deleteRole',
+          type: 'list',
+          message: `Select employee to delete`,
+          choices: res
+        },
+      ])
+      .then((answer) => {
+        //console.log(res);
+        var deleteRole = res.find((role) => {
+          return answer.deleteRole === role.name;
+        });
+        console.log(answer);
+        console.log("deleteRole: ", deleteRole);
+        connection.query(
+          'DELETE FROM role WHERE ?',
+          {
+            id: deleteRole.id,
+          },
+          (err) => {
+            if (err) throw err;
+            console.log(`Role deleted!\n`);
+            runSearch();
+          }
+        );
+
+
+      });
+
+  });
+
+};
