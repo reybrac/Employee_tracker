@@ -24,16 +24,16 @@ const runSearch = () => {
       type: 'rawlist',
       message: 'What would you like to do?',
       choices: [
-        'Add department', // completed
-        'Add role', // completed
-        'Add employee', // completed
-        'View departments', // completed
-        'View roles', // completed
-        'View employees', // completed
-        'View employees by Manager', //completed
-        'Update employee roles', // completed
-        'Update employee manager', // completed
-        'Delete role', // completed
+        'Add department',
+        'Add role',
+        'Add employee',
+        'View departments',
+        'View roles',
+        'View employees',
+        'View employees by Manager',
+        'Update employee roles',
+        'Update employee manager',
+        'Delete role',
         'Delete department',
       ],
     })
@@ -110,9 +110,9 @@ const viewRoles = () => {
   });
 };
 
-// View employees
+// View employees SELECT first_name, last_name, title, salary, name, manager_id FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id
 const viewEmployees = () => {
-  const query = 'SELECT first_name, last_name, title, salary, name,  manager_id FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id';
+  const query = 'SELECT employee.first_name, employee.last_name, title, salary, name, CONCAT (emp.first_name, " ", emp.last_name) AS Manager FROM employee INNER JOIN employee AS emp ON employee.manager_id =  emp.id INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id';
   connection.query(query, (err, res) => {
     if (err) throw err;
     console.table(res);
