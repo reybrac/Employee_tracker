@@ -26,15 +26,36 @@ A solution for managing a company's employees using node, inquirer, and MySQL. T
 11. Delete a department
 
 ## Installation instructions: 
-Using NPM inquirer and MySQL, type in NPM run start to run the application. This will take the user to the list of options on what they can do in the application.
+Using NPM inquirer and MySQL, type in node employee.js to run the application. This will take the user to the list of options on what they can do in the application.
 
 ## Usage information: 
 The usage of the project is to create a database to track employee information for a company. Information on departments, roles in the company, and employees. 
 
 Screenshot of the application:
-![alt EmployeeTracker](https://github.com/reybrac/Team_profile_generator/blob/main/dist/Pictures/Team-profile-generator.JPG?raw=true)
 
-Link to walk-through video:
+![alt EmployeeTracker](https://github.com/reybrac/Employee_tracker/blob/main/Assets/employeeTracker.JPG?raw=true)
+
+Link to walk-through videos:
+1. Video 1 walk-through the code and explaining the different sections
+
+https://drive.google.com/file/d/1ypFA_bOlUJadkXQYXuN018v7gOx6wZLg/view?usp=sharing
+
+2. Video 2 walk-through the application and view/updating employee tracker information (i.e. roles, department, ect.)
+https://drive.google.com/file/d/1V39OshBAVtAVczQ1iBNnw4fucP9wSmM2/view?usp=sharing
+
+A couple of GIFs from the video:
+1. Run the program and view departments, roles, and employees:
+
+![alt EmployeeTrackerpart2](./Assets/Run-EmployeeTracker-Part1.gif)
+
+2. View employees by manager and add a role:
+
+![alt EmployeeTrackerpart1](./Assets/Run-EmployeeTracker-Part2.gif)
+
+3. Add new employee:
+
+![alt EmployeeTrackerpart1](./Assets/Run-EmployeeTracker-Part3.gif)
+
 
 ## Contribution guidelines: 
 GitHub, W3Schools, TA Ryan, and help from examples in class.

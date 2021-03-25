@@ -110,7 +110,7 @@ const viewRoles = () => {
   });
 };
 
-// View employees SELECT first_name, last_name, title, salary, name, manager_id FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id
+// View employees 
 const viewEmployees = () => {
   const query = 'SELECT employee.first_name, employee.last_name, title, salary, name, CONCAT (emp.first_name, " ", emp.last_name) AS Manager FROM employee INNER JOIN employee AS emp ON employee.manager_id =  emp.id INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id';
   connection.query(query, (err, res) => {
