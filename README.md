@@ -33,15 +33,16 @@ The usage of the project is to create a database to track employee information f
 
 Screenshot of the application:
 
-![alt EmployeeTracker](https://github.com/reybrac/Employee_tracker/blob/main/Assets/employeeTracker.JPG?raw=true)
+![alt EmployeeTracker](./Assets/employeeTracker.JPG)
 
 Link to walk-through videos:
 1. Video 1 walk-through the code and explaining the different sections
 
-https://drive.google.com/file/d/1ypFA_bOlUJadkXQYXuN018v7gOx6wZLg/view?usp=sharing
+    https://drive.google.com/file/d/1ypFA_bOlUJadkXQYXuN018v7gOx6wZLg/view?usp=sharing
 
 2. Video 2 walk-through the application and view/updating employee tracker information (i.e. roles, department, ect.)
-https://drive.google.com/file/d/1V39OshBAVtAVczQ1iBNnw4fucP9wSmM2/view?usp=sharing
+
+    https://drive.google.com/file/d/1V39OshBAVtAVczQ1iBNnw4fucP9wSmM2/view?usp=sharing
 
 A couple of GIFs from the video:
 1. Run the program and view departments, roles, and employees:
